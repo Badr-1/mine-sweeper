@@ -1,0 +1,17 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="mine-sweeper:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/mine_sweeper_jar</output-path>
+    <root id="archive" name="mine-sweeper.jar">
+      <element id="module-output" name="mine-sweeper" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/13.0/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/ajalt/mordant/mordant-jvm/2.0.0-beta10/mordant-jvm-2.0.0-beta10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib/1.8.0/kotlin-stdlib-1.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/java/dev/jna/jna/5.12.1/jna-5.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.8.0/kotlin-stdlib-jdk8-1.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/markdown-jvm/0.3.1/markdown-jvm-0.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.8.0/kotlin-stdlib-jdk7-1.8.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-common/1.7.21/kotlin-stdlib-common-1.7.21.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/ajalt/colormath/colormath-jvm/3.2.1/colormath-jvm-3.2.1.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
