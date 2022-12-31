@@ -1,15 +1,18 @@
 package minesweeper
 
+import com.github.ajalt.mordant.rendering.TextColors.*
+import com.github.ajalt.mordant.table.table
+import com.github.ajalt.mordant.terminal.Terminal
 import kotlin.collections.ArrayDeque
 import kotlin.random.Random
 
-const val MARKED_SYMBOL = "*"
-const val MINE_SYMBOL = "X"
-const val EXPLORED = "/"
-const val UNEXPLORED_SYMBOL = "."
+const val MARKED_SYMBOL = "🚩"
+const val MINE_SYMBOL = "💣 "
+const val EXPLORED = "⬜"
+const val UNEXPLORED_SYMBOL = "⬛"
 const val LEVEL_COUNT = 9
 val GAME_RANGE = 0 until (LEVEL_COUNT * LEVEL_COUNT)
-
+val terminal = Terminal()
 
 class MineField(private val numberOfMines: Int) {
 
@@ -23,7 +26,6 @@ class MineField(private val numberOfMines: Int) {
     init {
         putMinesDown()
         addWarnings()
-//        printField(true)
     }
 
     private fun addWarnings() {
@@ -107,34 +109,149 @@ class MineField(private val numberOfMines: Int) {
         }
     }
 
-    private fun printField(showAllMines: Boolean = false) {
-        print(" │")
-        for (i in 1..LEVEL_COUNT) {
-            print("$i".padStart(2, ' ').padEnd(3, ' '))
-        }
-        println("│")
-        println("—│${"—".repeat(LEVEL_COUNT * 3)}│")
-        mineField.forEachIndexed { index, cells ->
-            print("${index + 1}|")
+    private fun Cell.display(showAllMines: Boolean) = if (this.isExplored) {
+        // possible values: unexplored | explored | near mine
+        // change unexplored area to explored
+        // keep everything else the same
+        if (this.symbol == UNEXPLORED_SYMBOL) EXPLORED else this.symbol
 
-            cells.forEach { cell: Cell ->
-                val value: String = if (cell.isExplored) {
-                    // possible values: unexplored | explored | near mine
-                    // change unexplored area to explored
-                    // keep everything else the same
-                    if (cell.symbol == UNEXPLORED_SYMBOL) EXPLORED else cell.symbol
-                } else { // unexplored area: mine | mark
-                    when {
-                        cell.isMine && showAllMines -> MINE_SYMBOL
-                        cell.isMarked -> MARKED_SYMBOL
-                        else -> UNEXPLORED_SYMBOL
-                    }
-                }
-                print(value.padStart(2, ' ').padEnd(3, ' '))
-            }
-            println("|")
+    } else { // unexplored area: mine | mark
+        when {
+            this.isMine && showAllMines -> MINE_SYMBOL
+            this.isMarked -> MARKED_SYMBOL
+            else -> UNEXPLORED_SYMBOL
         }
-        println("—│${"—".repeat(LEVEL_COUNT * 3)}│")
+    }
+
+
+    private fun printField(showAllMines: Boolean = false) {
+
+        val header = mutableListOf<String>()
+        for (i in 1..LEVEL_COUNT) {
+            header.add(i.toString())
+        }
+        terminal.println(
+            table {
+                header { row("➖", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣") }
+                body {
+                    row(
+                        "1️⃣",
+                        mineField[0][0].display(showAllMines),
+                        mineField[0][1].display(showAllMines),
+                        mineField[0][2].display(showAllMines),
+                        mineField[0][3].display(showAllMines),
+                        mineField[0][4].display(showAllMines),
+                        mineField[0][5].display(showAllMines),
+                        mineField[0][6].display(showAllMines),
+                        mineField[0][7].display(showAllMines),
+                        mineField[0][8].display(showAllMines),
+                    )
+                    row(
+                        "2️⃣",
+                        mineField[1][0].display(showAllMines),
+                        mineField[1][1].display(showAllMines),
+                        mineField[1][2].display(showAllMines),
+                        mineField[1][3].display(showAllMines),
+                        mineField[1][4].display(showAllMines),
+                        mineField[1][5].display(showAllMines),
+                        mineField[1][6].display(showAllMines),
+                        mineField[1][7].display(showAllMines),
+                        mineField[1][8].display(showAllMines),
+                    )
+
+                    row(
+                        "3️⃣",
+                        mineField[2][0].display(showAllMines),
+                        mineField[2][1].display(showAllMines),
+                        mineField[2][2].display(showAllMines),
+                        mineField[2][3].display(showAllMines),
+                        mineField[2][4].display(showAllMines),
+                        mineField[2][5].display(showAllMines),
+                        mineField[2][6].display(showAllMines),
+                        mineField[2][7].display(showAllMines),
+                        mineField[2][8].display(showAllMines),
+                    )
+
+                    row(
+                        "4️⃣",
+                        mineField[3][0].display(showAllMines),
+                        mineField[3][1].display(showAllMines),
+                        mineField[3][2].display(showAllMines),
+                        mineField[3][3].display(showAllMines),
+                        mineField[3][4].display(showAllMines),
+                        mineField[3][5].display(showAllMines),
+                        mineField[3][6].display(showAllMines),
+                        mineField[3][7].display(showAllMines),
+                        mineField[3][8].display(showAllMines),
+                    )
+
+                    row(
+                        "5️⃣",
+                        mineField[4][0].display(showAllMines),
+                        mineField[4][1].display(showAllMines),
+                        mineField[4][2].display(showAllMines),
+                        mineField[4][3].display(showAllMines),
+                        mineField[4][4].display(showAllMines),
+                        mineField[4][5].display(showAllMines),
+                        mineField[4][6].display(showAllMines),
+                        mineField[4][7].display(showAllMines),
+                        mineField[4][8].display(showAllMines),
+                    )
+
+                    row(
+                        "6️⃣",
+                        mineField[5][0].display(showAllMines),
+                        mineField[5][1].display(showAllMines),
+                        mineField[5][2].display(showAllMines),
+                        mineField[5][3].display(showAllMines),
+                        mineField[5][4].display(showAllMines),
+                        mineField[5][5].display(showAllMines),
+                        mineField[5][6].display(showAllMines),
+                        mineField[5][7].display(showAllMines),
+                        mineField[5][8].display(showAllMines),
+                    )
+
+                    row(
+                        "7️⃣",
+                        mineField[6][0].display(showAllMines),
+                        mineField[6][1].display(showAllMines),
+                        mineField[6][2].display(showAllMines),
+                        mineField[6][3].display(showAllMines),
+                        mineField[6][4].display(showAllMines),
+                        mineField[6][5].display(showAllMines),
+                        mineField[6][6].display(showAllMines),
+                        mineField[6][7].display(showAllMines),
+                        mineField[6][8].display(showAllMines),
+                    )
+
+                    row(
+                        "8️⃣",
+                        mineField[7][0].display(showAllMines),
+                        mineField[7][1].display(showAllMines),
+                        mineField[7][2].display(showAllMines),
+                        mineField[7][3].display(showAllMines),
+                        mineField[7][4].display(showAllMines),
+                        mineField[7][5].display(showAllMines),
+                        mineField[7][6].display(showAllMines),
+                        mineField[7][7].display(showAllMines),
+                        mineField[7][8].display(showAllMines),
+                    )
+                    row(
+                        "9️⃣",
+                        mineField[8][0].display(showAllMines),
+                        mineField[8][1].display(showAllMines),
+                        mineField[8][2].display(showAllMines),
+                        mineField[8][3].display(showAllMines),
+                        mineField[8][4].display(showAllMines),
+                        mineField[8][5].display(showAllMines),
+                        mineField[8][6].display(showAllMines),
+                        mineField[8][7].display(showAllMines),
+                        mineField[8][8].display(showAllMines),
+                    )
+                }
+            }
+        )
+
     }
 
     fun play() {
@@ -145,7 +262,7 @@ class MineField(private val numberOfMines: Int) {
             var y: Int
             var action: String
             action@ while (true) {
-                println("Set/unset mines marks or claim a cell as free: ")
+                println(cyan("Set/unset mines marks or claim a cell as free (flags remaining $numberOfMarkers 🚩): "))
                 input = readln()
                 if (input.matches(Regex("([1-9] [1-9] (mine|free))"))) {
 
@@ -155,7 +272,7 @@ class MineField(private val numberOfMines: Int) {
 
                     break@action
                 } else {
-                    println("invalid input: x y mine/free, x and y are integers between 1 and 9")
+                    println(red("invalid input: x y mine/free, x and y are integers between 1 and 9"))
                 }
             }
             // chose a cell with a number
@@ -164,7 +281,7 @@ class MineField(private val numberOfMines: Int) {
                     // if stepped on a mine
                     if (mineField[y][x].isMine) {
                         printField(true)
-                        println("You stepped on a mine and failed!")
+                        println(red("You stepped on a mine and failed!"))
                         break@gameLoop
                     } else {
                         val toBeExplored = ArrayDeque<Int>()
@@ -224,30 +341,33 @@ class MineField(private val numberOfMines: Int) {
                         }
                         printField()
                         if (numberOfUnExplored == numberOfMines) {
-                            println("Congratulations! You found all the mines!")
+                            println(green("Congratulations! You found all the mines!"))
                             break@gameLoop
                         }
                     }
                 }
 
                 "mine" -> {
-                    if (!mineField[y][x].isMarked) {
-                        mineField[y][x].isMarked = true
-                        numberOfMarkers--
-                        if (mineField[y][x].isMine) {
-                            numberOfMarkedMines++
+                    if (!mineField[y][x].isExplored) {
+
+                        if (!mineField[y][x].isMarked) {
+                            mineField[y][x].isMarked = true
+                            numberOfMarkers--
+                            if (mineField[y][x].isMine) {
+                                numberOfMarkedMines++
+                            }
+                        } else {
+                            mineField[y][x].isMarked = false
+                            numberOfMarkers++
+                            if (mineField[y][x].isMine) {
+                                numberOfMarkedMines--
+                            }
                         }
-                    } else {
-                        mineField[y][x].isMarked = false
-                        numberOfMarkers++
-                        if (mineField[y][x].isMine) {
-                            numberOfMarkedMines--
+                        printField()
+                        if (numberOfMarkedMines == numberOfMines && numberOfMarkers == 1) {
+                            println(green("Congratulations! You found all the mines!"))
+                            break@gameLoop
                         }
-                    }
-                    printField()
-                    if (numberOfMarkedMines == numberOfMines && numberOfMarkers == 1) {
-                        println("Congratulations! You found all the mines!")
-                        break@gameLoop
                     }
 
                 }
