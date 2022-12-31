@@ -110,7 +110,7 @@ class MineField(private val numberOfMines: Int) {
     private fun printField(showAllMines: Boolean = false) {
         print(" │")
         for (i in 1..LEVEL_COUNT) {
-            print("$i".padStart(2,' ').padEnd(3,' '))
+            print("$i".padStart(2, ' ').padEnd(3, ' '))
         }
         println("│")
         println("—│${"—".repeat(LEVEL_COUNT * 3)}│")
@@ -140,12 +140,26 @@ class MineField(private val numberOfMines: Int) {
     fun play() {
         printField()
         gameLoop@ while (true) {
-            println("Set/unset mines marks or claim a cell as free: ")
-            val input = readln().split(' ').map { it }
-            val x = input[0].toInt() - 1
-            val y = input[1].toInt() - 1
+            var input: String
+            var x: Int
+            var y: Int
+            var action: String
+            action@ while (true) {
+                println("Set/unset mines marks or claim a cell as free: ")
+                input = readln()
+                if (input.matches(Regex("([1-9] [1-9] (mine|free))"))) {
+
+                    x = input.split(' ').first().toInt() - 1
+                    y = input.split(' ')[1].toInt() - 1
+                    action = input.split(' ').last()
+
+                    break@action
+                } else {
+                    println("invalid input: x y mine/free, x and y are integers between 1 and 9")
+                }
+            }
             // chose a cell with a number
-            when (input[2]) {
+            when (action) {
                 "free" -> {
                     // if stepped on a mine
                     if (mineField[y][x].isMine) {
