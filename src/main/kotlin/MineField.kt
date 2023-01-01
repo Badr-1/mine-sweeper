@@ -279,105 +279,115 @@ class MineField(private val numberOfMines: Int) {
             when (action) {
                 "free" -> {
                     // if stepped on a mine
-                    if (mineField[y][x].isMine) {
-                        printField(true)
-                        println(red("You stepped on a mine and failed!"))
-                        break@gameLoop
-                    } else {
-                        val toBeExplored = ArrayDeque<Int>()
-                        val start = y * LEVEL_COUNT + x
-                        toBeExplored.addLast(start)
-                        while (toBeExplored.isNotEmpty()) {
-                            val index = toBeExplored.removeFirst()
-                            if (mineField.cell(index).isExplored) {
-                                continue
-                            }
-                            // mark as explored
-                            mineField.cell(index).isExplored = true
-                            numberOfUnExplored--
-                            if (mineField.cell(index).isMarked) {
-                                numberOfMarkers++
-                                mineField.cell(index).isMarked = false
-                            }
-                            if (mineField.cell(index).symbol[0].isDigit()) { // if near mine explore it only
-                                continue
-                            }
-                            // else add its neighbours
-
-
-                            val bottom = index + LEVEL_COUNT
-                            val top = index - LEVEL_COUNT
-                            // right
-                            if ((index + 1) % LEVEL_COUNT != 0) { // checks if the element isn't the last from the right
-                                toBeExplored.addToQueue(index + 1)
-                            }
-                            // left
-                            if (index % LEVEL_COUNT != 0) { // checks if the element isn't the last from the left
-                                toBeExplored.addToQueue(index - 1)
-                            }
-                            // top
-                            if (top in GAME_RANGE) {
-                                toBeExplored.addToQueue(top)
-                                // right
-                                if ((top + 1) % LEVEL_COUNT != 0) { // checks if the element isn't the last from the right
-                                    toBeExplored.addToQueue(top + 1)
-                                }
-                                // left
-                                if (top % LEVEL_COUNT != 0) { // checks if the element isn't the last from the left
-                                    toBeExplored.addToQueue(top - 1)
-                                }
-                            }
-                            if (bottom in GAME_RANGE) {
-                                toBeExplored.addToQueue(bottom)
-                                // right
-                                if ((bottom + 1) % LEVEL_COUNT != 0) { // checks if the element isn't the last from the right
-                                    toBeExplored.addToQueue(bottom + 1)
-                                }
-                                // left
-                                if (bottom % LEVEL_COUNT != 0) { // checks if the element isn't the last from the left
-                                    toBeExplored.addToQueue(bottom - 1)
-                                }
-                            }
-                        }
-                        printField()
-                        if (numberOfUnExplored == numberOfMines) {
-                            println(green("Congratulations! You found all the mines!"))
-                            break@gameLoop
-                        }
-                    }
+                    if (explore(y, x)) break@gameLoop
                 }
 
                 "mine" -> {
-                    if (!mineField[y][x].isExplored) {
-
-                        if (!mineField[y][x].isMarked) {
-                            if (numberOfMarkers != 0) {
-                                mineField[y][x].isMarked = true
-                                numberOfMarkers--
-                                if (mineField[y][x].isMine) {
-                                    numberOfMarkedMines++
-                                }
-                            } else {
-                                println(red("You don't have any flags"))
-                            }
-                        } else {
-                            mineField[y][x].isMarked = false
-                            numberOfMarkers++
-                            if (mineField[y][x].isMine) {
-                                numberOfMarkedMines--
-                            }
-                        }
-                        printField()
-                        if (numberOfMarkedMines == numberOfMines && numberOfMarkers == 1) {
-                            println(green("Congratulations! You found all the mines!"))
-                            break@gameLoop
-                        }
-                    }
+                    if (putFlag(y, x)) break@gameLoop
 
                 }
 
             }
         }
+    }
+
+    private fun putFlag(y: Int, x: Int): Boolean {
+        if (!mineField[y][x].isExplored) {
+
+            if (!mineField[y][x].isMarked) {
+                if (numberOfMarkers != 0) {
+                    mineField[y][x].isMarked = true
+                    numberOfMarkers--
+                    if (mineField[y][x].isMine) {
+                        numberOfMarkedMines++
+                    }
+                } else {
+                    println(red("You don't have any flags"))
+                }
+            } else {
+                mineField[y][x].isMarked = false
+                numberOfMarkers++
+                if (mineField[y][x].isMine) {
+                    numberOfMarkedMines--
+                }
+            }
+            printField()
+            if (numberOfMarkedMines == numberOfMines && numberOfMarkers == 1) {
+                println(green("Congratulations! You found all the mines!"))
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun explore(y: Int, x: Int): Boolean {
+        if (mineField[y][x].isMine) {
+            printField(true)
+            println(red("You stepped on a mine and failed!"))
+            return true
+        } else {
+            val toBeExplored = ArrayDeque<Int>()
+            val start = y * LEVEL_COUNT + x
+            toBeExplored.addLast(start)
+            while (toBeExplored.isNotEmpty()) {
+                val index = toBeExplored.removeFirst()
+                if (mineField.cell(index).isExplored) {
+                    continue
+                }
+                // mark as explored
+                mineField.cell(index).isExplored = true
+                numberOfUnExplored--
+                if (mineField.cell(index).isMarked) {
+                    numberOfMarkers++
+                    mineField.cell(index).isMarked = false
+                }
+                if (mineField.cell(index).symbol[0].isDigit()) { // if near mine explore it only
+                    continue
+                }
+                // else add its neighbours
+
+
+                val bottom = index + LEVEL_COUNT
+                val top = index - LEVEL_COUNT
+                // right
+                if ((index + 1) % LEVEL_COUNT != 0) { // checks if the element isn't the last from the right
+                    toBeExplored.addToQueue(index + 1)
+                }
+                // left
+                if (index % LEVEL_COUNT != 0) { // checks if the element isn't the last from the left
+                    toBeExplored.addToQueue(index - 1)
+                }
+                // top
+                if (top in GAME_RANGE) {
+                    toBeExplored.addToQueue(top)
+                    // right
+                    if ((top + 1) % LEVEL_COUNT != 0) { // checks if the element isn't the last from the right
+                        toBeExplored.addToQueue(top + 1)
+                    }
+                    // left
+                    if (top % LEVEL_COUNT != 0) { // checks if the element isn't the last from the left
+                        toBeExplored.addToQueue(top - 1)
+                    }
+                }
+                if (bottom in GAME_RANGE) {
+                    toBeExplored.addToQueue(bottom)
+                    // right
+                    if ((bottom + 1) % LEVEL_COUNT != 0) { // checks if the element isn't the last from the right
+                        toBeExplored.addToQueue(bottom + 1)
+                    }
+                    // left
+                    if (bottom % LEVEL_COUNT != 0) { // checks if the element isn't the last from the left
+                        toBeExplored.addToQueue(bottom - 1)
+                    }
+                }
+            }
+            printField()
+            if (numberOfUnExplored == numberOfMines) {
+                println(green("Congratulations! You found all the mines!"))
+                return true
+            }
+        }
+        return false
     }
 
     private fun ArrayDeque<Int>.addToQueue(index: Int) {
