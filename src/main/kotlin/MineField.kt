@@ -351,10 +351,14 @@ class MineField(private val numberOfMines: Int) {
                     if (!mineField[y][x].isExplored) {
 
                         if (!mineField[y][x].isMarked) {
-                            mineField[y][x].isMarked = true
-                            numberOfMarkers--
-                            if (mineField[y][x].isMine) {
-                                numberOfMarkedMines++
+                            if (numberOfMarkers != 0) {
+                                mineField[y][x].isMarked = true
+                                numberOfMarkers--
+                                if (mineField[y][x].isMine) {
+                                    numberOfMarkedMines++
+                                }
+                            } else {
+                                println(red("You don't have any flags"))
                             }
                         } else {
                             mineField[y][x].isMarked = false
